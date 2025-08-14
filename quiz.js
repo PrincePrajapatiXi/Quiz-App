@@ -166,31 +166,40 @@ const wrongSound = new Audio("sounds/wrong.mp3");
 const clickSound = new Audio("sounds/click.mp3");
 
 
-
-
-
-
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
 
 let currentQuestionIndex = 0;
 let score = 0;
+let shuffledQuestions = [];
 
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
+    shuffledQuestions = shuffleArray(questions); // shuffle questions
     showQuestion();
+}
+
+function shuffleArray(array) {
+    let shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
 
 function showQuestion() {
     resetState();
-    let currentQuestion = questions[currentQuestionIndex];
+    let currentQuestion = shuffledQuestions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
-    questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+    questionElement.innerHTML = `${questionNo}. ${currentQuestion.question}`;
 
-    currentQuestion.answers.forEach(answer => {
+    // Shuffle answers before displaying
+    let shuffledAnswers = shuffleArray(currentQuestion.answers);
+    shuffledAnswers.forEach(answer => {
         const button = document.createElement("button");
         button.innerHTML = answer.text;
         button.classList.add("btn");
@@ -209,12 +218,10 @@ function resetState() {
     }
 }
 
-
 function selectAnswer(e) {
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
 
-    // Play sound
     if (isCorrect) {
         correctSound.play();
         selectedBtn.classList.add("correct");
@@ -224,7 +231,6 @@ function selectAnswer(e) {
         selectedBtn.classList.add("incorrect");
     }
 
-    // Highlight correct answer & disable all buttons
     Array.from(answerButtons.children).forEach(button => {
         if (button.dataset.correct === "true") {
             button.classList.add("correct");
@@ -232,21 +238,19 @@ function selectAnswer(e) {
         button.disabled = true;
     });
 
-    // Show Next button
     nextButton.style.display = "block";
 }
 
-
 function showScore() {
     resetState();
-    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    questionElement.innerHTML = `You scored ${score} out of ${shuffledQuestions.length}!`;
     nextButton.innerHTML = "Play Again";
     nextButton.style.display = "block";
 }
 
 function handleNextButton() {
     currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
+    if (currentQuestionIndex < shuffledQuestions.length) {
         showQuestion();
     } else {
         showScore();
@@ -255,7 +259,7 @@ function handleNextButton() {
 
 nextButton.addEventListener("click", () => {
     clickSound.play();
-    if (currentQuestionIndex < questions.length) {
+    if (currentQuestionIndex < shuffledQuestions.length) {
         handleNextButton();
     } else {
         startQuiz();
