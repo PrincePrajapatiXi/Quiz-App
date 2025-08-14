@@ -78,3 +78,26 @@ body{
 .incorrect{
     background: #f97878;
 }
+
+.author-name {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    color: #001e4d;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.7;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Also add position relative to the app container */
+.app {
+    background: #fff;
+    width: 90%;
+    max-width: 600px;
+    margin: 100px auto 0;
+    border-radius: 10px;
+    padding: 30px;
+    position: relative; /* Add this line */
+}
+
