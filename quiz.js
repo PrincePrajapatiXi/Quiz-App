@@ -161,11 +161,12 @@ const questions = [
     }
 ];
 
+// Sounds
 const correctSound = new Audio("sounds/correct.mp3");
 const wrongSound = new Audio("sounds/wrong.mp3");
 const clickSound = new Audio("sounds/click.mp3");
 
-
+// DOM elements
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
@@ -174,14 +175,16 @@ let currentQuestionIndex = 0;
 let score = 0;
 let shuffledQuestions = [];
 
+// Start quiz
 function startQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
-    shuffledQuestions = shuffleArray(questions); // shuffle questions
+    shuffledQuestions = shuffleArray(questions); // shuffle original array
     showQuestion();
 }
 
+// Shuffle helper
 function shuffleArray(array) {
     let shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -191,10 +194,12 @@ function shuffleArray(array) {
     return shuffled;
 }
 
+// Display current question and answers
 function showQuestion() {
     resetState();
     let currentQuestion = shuffledQuestions[currentQuestionIndex];
     let questionNo = currentQuestionIndex + 1;
+
     questionElement.innerHTML = `${questionNo}. ${currentQuestion.question}`;
 
     // Shuffle answers before displaying
@@ -211,6 +216,7 @@ function showQuestion() {
     });
 }
 
+// Clear old state
 function resetState() {
     nextButton.style.display = "none";
     while (answerButtons.firstChild) {
@@ -218,6 +224,7 @@ function resetState() {
     }
 }
 
+// Handle answer selection
 function selectAnswer(e) {
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
@@ -231,6 +238,7 @@ function selectAnswer(e) {
         selectedBtn.classList.add("incorrect");
     }
 
+    // Show correct answer & disable all buttons
     Array.from(answerButtons.children).forEach(button => {
         if (button.dataset.correct === "true") {
             button.classList.add("correct");
@@ -241,6 +249,7 @@ function selectAnswer(e) {
     nextButton.style.display = "block";
 }
 
+// Display score at the end
 function showScore() {
     resetState();
     questionElement.innerHTML = `You scored ${score} out of ${shuffledQuestions.length}!`;
@@ -248,6 +257,7 @@ function showScore() {
     nextButton.style.display = "block";
 }
 
+// Handle moving to next question
 function handleNextButton() {
     currentQuestionIndex++;
     if (currentQuestionIndex < shuffledQuestions.length) {
@@ -257,6 +267,7 @@ function handleNextButton() {
     }
 }
 
+// Next button click
 nextButton.addEventListener("click", () => {
     clickSound.play();
     if (currentQuestionIndex < shuffledQuestions.length) {
@@ -266,4 +277,5 @@ nextButton.addEventListener("click", () => {
     }
 });
 
+// Initialize quiz
 startQuiz();
