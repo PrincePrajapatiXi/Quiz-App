@@ -161,6 +161,14 @@ const questions = [
     }
 ];
 
+const correctSound = new Audio("sounds/correct.mp3");
+const wrongSound = new Audio("sounds/wrong.mp3");
+const clickSound = new Audio("sounds/click.mp3");
+
+
+
+
+
 
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
@@ -205,20 +213,29 @@ function resetState() {
 function selectAnswer(e) {
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
+
+    // Play sound
     if (isCorrect) {
+        correctSound.play();
         selectedBtn.classList.add("correct");
         score++;
     } else {
+        wrongSound.play();
         selectedBtn.classList.add("incorrect");
     }
+
+    // Highlight correct answer & disable all buttons
     Array.from(answerButtons.children).forEach(button => {
         if (button.dataset.correct === "true") {
             button.classList.add("correct");
         }
         button.disabled = true;
     });
+
+    // Show Next button
     nextButton.style.display = "block";
 }
+
 
 function showScore() {
     resetState();
@@ -237,6 +254,7 @@ function handleNextButton() {
 }
 
 nextButton.addEventListener("click", () => {
+    clickSound.play();
     if (currentQuestionIndex < questions.length) {
         handleNextButton();
     } else {
